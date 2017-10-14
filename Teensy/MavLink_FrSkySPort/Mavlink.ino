@@ -267,28 +267,29 @@ void _MavLink_receive() {
             debugSerial.print(mavlink_msg_sys_status_get_current_battery(&msg));
             debugSerial.println();
           #endif
-          uint8_t temp_cell_count;
           #ifdef USE_SINGLE_CELL_MONITOR
+            uint8_t temp_cell_count;
             ap_cell_count =  lscm.getCellsInUse();
-            if (lscm.getCellsInUse() == 0){
+            if (ap_cell_count == 0) {
               if (ap_voltage_battery > 21000) temp_cell_count = 6;
               else if (ap_voltage_battery > 17500) temp_cell_count = 5;
               else if (ap_voltage_battery > 12750) temp_cell_count = 4;
               else if (ap_voltage_battery > 8500)  temp_cell_count = 3;
               else if (ap_voltage_battery > 4250)  temp_cell_count = 2;
               else temp_cell_count = 0;
-              if (temp_cell_count > ap_cell_count)
-                ap_cell_count = temp_cell_count;
+              if (temp_cell_count > ap_cell_count) ap_cell_count = temp_cell_count;
             }
-          #else
-            if(ap_voltage_battery > 21000) temp_cell_count = 6;
-            else if (ap_voltage_battery > 17500) temp_cell_count = 5;
-            else if (ap_voltage_battery > 12750) temp_cell_count = 4;
-            else if (ap_voltage_battery > 8500)  temp_cell_count = 3;
-            else if (ap_voltage_battery > 4250)  temp_cell_count = 2;
-            else temp_cell_count = 0;
-            if(temp_cell_count > ap_cell_count)
-              ap_cell_count = temp_cell_count;
+          #elif defined USE_FLVSS_FAKE_SENSOR_DATA
+            uint8_t temp_cell_count;
+            if  (ap_cell_count == 0) {
+              if(ap_voltage_battery > 21000) temp_cell_count = 6;
+              else if (ap_voltage_battery > 17500) temp_cell_count = 5;
+              else if (ap_voltage_battery > 12750) temp_cell_count = 4;
+              else if (ap_voltage_battery > 8500)  temp_cell_count = 3;
+              else if (ap_voltage_battery > 4250)  temp_cell_count = 2;
+              else temp_cell_count = 0;
+              if(temp_cell_count > ap_cell_count)  ap_cell_count = temp_cell_count;
+            }
           #endif
           break;
         /*
@@ -509,6 +510,26 @@ void _MavLink_receive() {
             debugSerial.println();
           #endif
         break;
+        /*
+         * *****************************************************
+         * *** MAVLINK Message #181 - BATTERY2               ***
+         * *****************************************************
+         */
+        #ifdef USE_BATT2
+          case MAVLINK_MSG_ID_BATTERY2:
+            ap_voltage_battery2 = mavlink_msg_battery2_get_voltage(&msg);  // 1 = 1mV
+            ap_current_battery2 = mavlink_msg_battery2_get_current_battery(&msg);     // 1=10mA
+
+            #ifdef DEBUG_APM_BAT2
+              debugSerial.print(millis());
+              debugSerial.print("\tMAVLINK_MSG_ID_BATTERY2: voltage_battery2: ");
+              debugSerial.print(ap_voltage_battery2);
+              debugSerial.print(", current_battery2: ");
+              debugSerial.print(ap_current_battery2);
+              debugSerial.println();
+            #endif
+          break;
+        #endif
         /*
          * *****************************************************
          * *** MAVLINK Message #253 - STATUSTEXT             ***
