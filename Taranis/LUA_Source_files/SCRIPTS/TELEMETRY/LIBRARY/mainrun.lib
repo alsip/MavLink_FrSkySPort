@@ -260,18 +260,20 @@ end
 		telem_sats = 0
 		telem_lock = telem_t1%10
 		telem_sats = (telem_t1 - (telem_t1%10))/10
-		if telem_lock >= 3 then
-			lcd.drawText (168, 10, "3D",0)
-			lcd.drawNumber (195, 10, telem_sats, 0+LEFT)
-			lcd.drawText (lcd.getLastPos(), 10, "S", 0)
-		elseif telem_lock>1 then
-			lcd.drawText (168, 10, "2D", 0)
-			lcd.drawNumber (195, 10, telem_sats, 0+LEFT )
-			lcd.drawText (lcd.getLastPos(), 10, "S", 0)
-		else
-			lcd.drawText (168, 10, "NO", 0+BLINK+INVERS)
-			lcd.drawText (195, 10, "--S",0)
-		end
+    if telem_lock <= 1 then
+      lcd.drawText (168, 10, "NO", 0+BLINK+INVERS)
+      lcd.drawText (195, 10, "--S",0)
+    else
+      if telem_lock == 2 then lcd.drawText (168, 10, "2D", 0)
+      elseif telem_lock == 3 then lcd.drawText (168, 10, "3D", 0)
+      elseif telem_lock == 4 then lcd.drawText (168, 10, "DG", 0)
+      elseif telem_lock == 5 then lcd.drawText (168, 10, "FL", 0)
+      elseif telem_lock == 6 then lcd.drawText (168, 10, "FX", 0)
+      elseif telem_lock >= 7 then lcd.drawText (168, 10, "ST",0)
+      end
+      lcd.drawNumber (195, 10, telem_sats, 0+LEFT )
+      lcd.drawText (lcd.getLastPos(), 10, "S", 0)
+    end
 		hdop=round(getValue("A2"))/10
 		if hdop <2.5 then
 			lcd.drawNumber (180, 10, hdop*10, PREC1+LEFT+SMLSIZE )
