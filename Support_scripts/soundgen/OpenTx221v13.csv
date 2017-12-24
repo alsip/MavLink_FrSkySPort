@@ -254,6 +254,7 @@ Path;FileName;EN;DE
 /SYSTEM;sensorko;sensor lost;Sensor verloren
 /SYSTEM;servoko;servo overload;Servo Überlast
 /SYSTEM;rxko;power overload;Leistung Überlast
+/SYSTEM;modelpwr;receiver still connected;Empfänger noch verbunden
 ;gearup;gear!, up!;Fahrwerk eingezogen
 ;geardn;gear!, down!;Fahrwerk ausgefahren
 ;lnding;landing;Landung
